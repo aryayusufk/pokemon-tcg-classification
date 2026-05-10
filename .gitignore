@@ -1,0 +1,30 @@
+# Lingkungan Virtual (Penting untuk diabaikan)
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Data (Abaikan file gambar/dataset, tapi biarkan foldernya jika menggunakan .gitkeep)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+# Model Machine Learning (Abaikan file model berukuran besar)
+models/*.pt
+models/*.pth
+models/*.h5
+models/*.pkl
+models/*.joblib
+models/*.onnx
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+notebooks/.ipynb_checkpoints/
+
+# File konfigurasi OS
+.DS_Store
+Thumbs.db
