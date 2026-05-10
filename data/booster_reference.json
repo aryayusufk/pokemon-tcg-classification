@@ -1,0 +1,18 @@
+{
+     "Nama_Set_1": [
+       {
+         "nama": "Nama Booster Pack 1",
+         "rilis": "Tahun Rilis",
+         "kode": "Kode Set",
+         "gambar": "path/atau/url_gambar_booster.jpg"
+       }
+     ],
+     "Nama_Set_2": [
+       {
+         "nama": "Nama Booster Pack 2",
+         "rilis": "Tahun Rilis",
+         "kode": "Kode Set",
+         "gambar": "path/atau/url_gambar_booster.jpg"
+       }
+     ]
+   }
