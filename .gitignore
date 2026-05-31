@@ -10,6 +10,8 @@ __pycache__/
 # Data (Abaikan file gambar/dataset, tapi biarkan foldernya jika menggunakan .gitkeep)
 data/raw/*
 !data/raw/.gitkeep
+data/patches/*
+!data/patches/.gitkeep
 data/processed/*
 !data/processed/.gitkeep
 
