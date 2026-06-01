@@ -56,7 +56,9 @@ def main():
         st.error(f"Error: {e}")
         return
 
-    uploaded_file = st.file_uploader("Unggah Citra Kartu", type=["jpg", "jpeg", "png", "jfif"])
+    uploaded_file = st.file_uploader(
+        "Unggah Citra Kartu", type=["jpg", "jpeg", "png", "jfif"]
+    )
 
     if uploaded_file is not None:
         image = Image.open(uploaded_file).convert("RGB")
@@ -91,26 +93,67 @@ def main():
             img_array = np.expand_dims(img_array, axis=0)
             img_preprocessed = preprocess_input(img_array)
 
+        # ---------------------------------------------------------
+        # PREDIKSI DAN VISUALISASI LUARAN (DENGAN THRESHOLDING)
+        # ---------------------------------------------------------
         predictions = model.predict(img_preprocessed)[0]
         top_3_indices = np.argsort(predictions)[::-1][:3]
+
         top_1_class = CLASS_NAMES[top_3_indices[0]]
+        top_1_confidence = predictions[top_3_indices[0]] * 100
+
+        # AMBANG BATAS KEPERCAYAAN (THRESHOLD)
+        # Kartu Pokemon yang valid biasanya memiliki skor > 75% dengan model Patch-Based
+        CONFIDENCE_THRESHOLD = 75.0
 
         with col_output:
             st.subheader("Hasil Klasifikasi")
-            st.success(
-                f"**Identifikasi Utama:** {top_1_class.replace('-', ' ').title()} ({predictions[top_3_indices[0]] * 100:.2f}%)"
-            )
-            for i in top_3_indices:
-                st.write(f"- {CLASS_NAMES[i].title()}: {predictions[i] * 100:.2f}%")
 
-            if top_1_class in booster_ref:
-                info = booster_ref[top_1_class][0]
-                img_path = os.path.join(
-                    os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
-                    info["gambar"],
+            # Logika Filter Out-of-Distribution (OOD)
+            if top_1_confidence >= CONFIDENCE_THRESHOLD:
+                # Jika skor tinggi, tampilkan hasil seperti biasa
+                st.success(
+                    f"**Identifikasi Utama:** {top_1_class.replace('-', ' ').title()} ({top_1_confidence:.2f}%)"
                 )
-                if os.path.exists(img_path):
-                    st.image(img_path, width=250, caption=info["nama"])
+
+                st.markdown("**Top-3 Prediksi Model:**")
+                for i in top_3_indices:
+                    st.write(
+                        f"- {CLASS_NAMES[i].replace('-', ' ').title()}: {predictions[i] * 100:.2f}%"
+                    )
+
+                st.markdown("---")
+                st.subheader("Rekomendasi Booster Pack")
+
+                if top_1_class in booster_ref:
+                    info = booster_ref[top_1_class][0]
+                    st.markdown(f"""
+                                **Nama Produk:** {info['nama']}  
+                                **Tahun Rilis:** {info['rilis']} | **Kode Set:** {info.get('kode', 'N/A')}
+                                """)
+
+                    img_path = os.path.join(
+                        os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        info["gambar"],
+                    )
+                    if os.path.exists(img_path):
+                        st.image(img_path, width=250, caption=info["nama"])
+            else:
+                # Jika skor di bawah threshold (Misal: gambar meja, wajah, dll)
+                st.error(
+                    "⚠️ Sistem tidak dapat mengidentifikasi gambar ini dengan tingkat kepercayaan yang meyakinkan."
+                )
+                st.markdown(f"""
+                            **Skor Tertinggi:** {top_1_confidence:.2f}% ({top_1_class.replace('-', ' ').title()})
+                            
+                            **Kemungkinan Penyebab:**
+                            1. Gambar yang diunggah **bukan kartu Pokémon TCG**.
+                            2. Kartu berasal dari **set di luar 10 kelas yang didukung**.
+                            3. Area *Micro-RoI* (kiri bawah) terlalu blur atau tertutup pantulan cahaya.
+                            """)
+                st.info(
+                    "Sesuai batasan sistem, pastikan Anda hanya mengunggah kartu Pokémon TCG dari 10 set yang terdaftar."
+                )
 
 
 if __name__ == "__main__":
