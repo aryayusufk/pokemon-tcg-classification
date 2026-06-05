@@ -1,8 +1,8 @@
 import os
 import cv2
 
-INPUT_BASE_DIR = os.path.join("data", "processed")
-OUTPUT_BASE_DIR = os.path.join("data", "patches")
+INPUT_BASE_DIR = os.path.join("data", "processed (80-10-10)")
+OUTPUT_BASE_DIR = os.path.join("data", "patches (80-10-10)")
 TARGET_SIZE = (224, 224)
 
 print("Memulai ekstraksi Patch (Micro-RoI) ke 224x224...")

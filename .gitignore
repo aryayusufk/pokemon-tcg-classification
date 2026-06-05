@@ -10,10 +10,15 @@ __pycache__/
 # Data (Abaikan file gambar/dataset, tapi biarkan foldernya jika menggunakan .gitkeep)
 data/raw/*
 !data/raw/.gitkeep
-data/patches/*
-!data/patches/.gitkeep
-data/processed/*
-!data/processed/.gitkeep
+data/patches (70-15-15)/*
+!data/patches (70-15-15)/.gitkeep
+data/patches (80-10-10)/*
+!data/patches (80-10-10)/.gitkeep
+data/processed (70-15-15)/*
+!data/processed (70-15-15)/.gitkeep
+data/processed (80-10-10)/*
+!data/processed (80-10-10)/.gitkeep
+
 
 # Model Machine Learning (Abaikan file model berukuran besar)
 models/*.pt
